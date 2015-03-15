@@ -1,0 +1,186 @@
+body {
+  /*padding-top: 50px;*/
+  padding-bottom: 20px;
+  background-color: black;
+}
+
+hr {
+  border-color: rgba(100, 100, 100, 0.5);
+}
+
+h2, h3 {
+  color: white;
+}
+
+p {
+  margin: 0;
+  cursor: pointer;
+}
+
+p:hover {
+  color: red;
+}
+
+.container {
+  padding-left: 50px;
+}
+
+/*------------------*/
+
+#performer-list {
+  color: lightgray;
+  font-size: 11px;
+  overflow: scroll;
+  height: 600px;
+}
+
+#project-list {
+  color: lightgray;
+  font-size: 11px;
+  overflow: scroll;
+  height: 600px;
+}
+
+#description {
+  float: right;
+  color: gray;
+  margin-top: -45px;
+  margin-right: 15px;
+  cursor: none;
+}
+
+
+/*------------------*/
+
+svg {
+  background: black;
+}
+
+circle {
+  stroke-width: 0.5px;
+}
+
+circle:hover {
+  fill: red !important;
+  /*opacity: 0.5;*/
+}
+
+line {
+  stroke: rgba(199, 199, 199, 0.1);
+}
+
+.link {
+  stroke: rgba(0, 0, 0, 0.1);
+}
+
+text {
+  fill: rgb(145, 145, 145);
+  cursor: pointer;
+  pointer-events: none;
+}
+
+text:hover {
+  color: white !important;
+}
+
+
+
+/*.node text {
+  pointer-events: none;
+  font: 10px sans-serif;
+  color: white;
+  background-color: black;
+  padding: 2px;
+  z-index: 100;
+}
+
+.node.fixed {
+  stroke: #f00;
+}*/
+
+.selected {
+  fill: red !important;
+  border: 1px solid red;
+}
+
+.project {
+  fill: rgba(100, 100, 100, 1);
+}
+.corporation {
+  /*fill: rgba(125, 16, 16, 0.6);*/
+  fill: rgb(87, 11, 11);
+}
+.university {
+  /*fill: rgba(174, 123, 29, 0.6);*/
+  fill: rgb(122, 86, 20);
+}
+
+.legend {
+  
+}
+
+
+/*------------------*/
+
+.row-button {
+    width: 100% !important;
+    padding: 2px; 
+}
+
+.row-button:hover {
+    cursor: pointer;
+    fill: rgb(45, 45, 45);
+}
+
+
+/*------------------*/
+
+
+#tooltip {
+    visibility: hidden;
+    position: absolute;
+    line-height: 20px;
+    padding: 1px;
+    font-size: 14px;
+    background: rgb(100, 100, 100);
+    border: 4px solid rgb(100, 100, 100);
+    border-radius: 0px;
+    text-shadow: rgba(0, 0, 0, 0.0980392) 1px 1px 1px;
+    -webkit-box-shadow: 0 2px 2.5px rgba(0,0,0,0.2);
+    -moz-box-shadow: 0 2px 2.5px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 2.5px rgba(0,0,0,0.2);
+}
+
+#tooltip:after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-width: 7px;
+    border-style: solid;
+    border-color: transparent rgb(100, 100, 100) transparent transparent;
+    top: 1px;
+    left: -18px;
+}
+
+#tooltip h3 {
+    color: white;
+    font-size: 14px;
+    line-height: 1;
+    margin: 3px;
+    padding-bottom: 3px;
+}
+
+#tooltip p {
+    /*color: rgb(200, 200, 200);*/
+    color: white;
+    /*font-size: 12px;*/
+    margin: 3px;
+    /*line-height: 1;*/
+}
+
+.subtext {
+  font-size: 10px;
+  color: darkgray !important;
+  line-height: 1.25;
+}
