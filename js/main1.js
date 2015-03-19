@@ -1,102 +1,136 @@
 // TODO: LABEL LARGEST NODES WITHOUT HOVERING 
-// Get the summary of the project via FedBizOps??
 
 // What projects the cluster has worked on
 var universityColor = 'rgb(122, 86, 20)';
 var corporationColor = 'rgb(87, 11, 11)';
 var currencyFormat = d3.format('$,');
 
+
+
 $(document).ready(function(){
 
   
-  d3.json("data/data1.json", function(error, graph) {
-    console.log(graph);
+  queue()
+    .defer(d3.json, 'data/2011_darpa_graph2.json')
+    .defer(d3.json, 'data/darpa_performer_descriptions_GOOD.json')
+    .defer(d3.json, 'data/project_descriptions.json')
+    .await(graphics);
 
-    var contractors = [];
-    var programs = [];
-
-    for (var i = 0; i < graph.nodes.length; i++) {
-        var d = graph.nodes[i];
-        d.index = i;
-        if (d.type === 'program') {    
-            programs.push(d);
-        } else {
-            contractors.push(d);
-        }
-    }
+});
 
 
-    var maxContract = d3.max(graph.nodes, function(d){ return d.weight; });
+function graphics(error, graph, performerDescription, projectDescription) {
+  // console.log(graph);
+  console.log('performers', performerDescription);
+  console.log('projects', projectDescription);
 
-    createGraph(graph);
-    rowChart(graph, contractors, maxContract, '#performer-list', 'performer');
-    rowChart(graph, programs, maxContract, '#project-list', 'program');
+  var contractors = [];
+  var programs = [];
 
-
-    $('#performer-list svg g').on('mouseover', function(d) {
-        var id = ($(this).data()).id;
-        $('circle[node-id=' + id + ']')
-            .css('fill', 'white');
-
-        var data = d3.select('circle').attr('node-id', id).data();
-        console.log(data[0].x);
-
-    }).on('mouseout', function(d) {
-        $('circle').css('fill', '');
-        $('.bar').removeClass('selected');
-
-    }).on('click', function(d) {
-      
-    });
+  for (var i = 0; i < graph.nodes.length; i++) {
+      var d = graph.nodes[i];
+      d.index = i;
+      if (d.type === 'program') {    
+          programs.push(d);
+      } else {
+          contractors.push(d);
+      }
+  }
 
 
-    // Highlights the corresponding nodes
-    $('#project-list svg g').on('mouseover', function(d) {
-        var id = ($(this).data()).id;   
+  var maxContract = d3.max(graph.nodes, function(d){ return d.weight; });
 
-        for (var i = 0; i < graph.links.length; i++) {
+  createGraph(graph, performerDescription);
+  // rowChart(graph, contractors, maxContract, '#performer-list', 'performer', performerDescription);
+  // rowChart(graph, programs, maxContract, '#project-list', 'program', projectDescription);
 
-            if (id === graph.links[i].source || id === graph.links[i].target) {
-                // console.log(graph.links[i]);
 
-                $('circle[node-id=' + graph.links[i].target + ']')
-                    .css('fill', 'white');
-                $('circle[node-id=' + graph.links[i].source + ']')
-                    .css('fill', 'white');
+  $('#performer-list svg g').on('mouseover', function(d) {
+      var id = ($(this).data()).id;
+      $('circle[node-id=' + id + ']')
+          .css('fill', 'white');
 
-            } else {
-                // THIS IS WHERE THE FADE OUT WOULD HAPPEN...
-                // $('circle').css('fill', 'rgba(100, 100, 100, 0.2');
-            }
-        }
+      var data = d3.select('circle').attr('node-id', id).data();
+      console.log(data[0].x);
 
-      // console.log(nodes);
-    }).on('mouseout', function() {
-        // $('.bar').css('fill', '');
-        $('.bar').removeClass('selected');
-        $('circle').css('fill', '');
-    }).on('click', function() {
-        console.log($(this).data());
-    }); // ends the click to change color function.
+  }).on('mouseout', function(d) {
+      $('circle').css('fill', '');
+      $('.bar').removeClass('selected');
 
+  }).on('click', function(d) {
+    
   });
 
 
+  // Highlights the corresponding nodes
+  $('#project-list svg g').on('mouseover', function(d) {
+      var id = ($(this).data()).id;   
 
+      for (var i = 0; i < graph.links.length; i++) {
 
+          // d3.selectAll('circle').attr('fill-opacity', 0.2);
 
+          if (id === graph.links[i].source || id === graph.links[i].target) {
+              // console.log(graph.links[i]);
+              // d3.selectAll('circle').attr('node-id', graph.links[i].target).attr('fill-opacity', 1);
 
+              $('circle[node-id=' + graph.links[i].target + ']')
+                  .css('fill', 'white');
+              $('circle[node-id=' + graph.links[i].source + ']')
+                  .css('fill', 'white');
 
+          } else {
+              
+              // THIS IS WHERE THE FADE OUT WOULD HAPPEN...
+              // $('circle').css('fill', 'rgba(100, 100, 100, 0.2');
+          }
+      }
+
+    // console.log(nodes);
+  }).on('mouseout', function() {
+      // d3.selectAll('circle').attr('fill-opacity', 1);
+      $('.bar').removeClass('selected');
+      $('circle').css('fill', '');
+  }).on('click', function() {
+      console.log($(this).data());
+  }); // ends the click to change color function.
+
+  
 
   $('circle').on('click', function(d) {
     console.log(this);
   });
 
-}); // ENDS D3.JSON
+
+  var button = d3.select('#graphic')
+    .append('button')
+    .attr('class', 'btn btn-default')
+    .attr('id', 'colorToggle')
+    .style('position', 'absolute')
+    .style('top','10px')
+    .style('left','20px')
+    .text('Color by University/Corporation')
+    .on('click', function() {
+      if (d3.selectAll('circle.university').classed('university-selected')){
+        d3.select('#colorToggle').text('Color by University/Corporation');
+        d3.selectAll('circle.university').classed('university-selected', false);
+      } else {
+        d3.select('#colorToggle').text('Color by DARPA Department');
+        d3.selectAll('circle.university').classed('university-selected', true);
+      }
+
+      if (d3.selectAll('circle.corporation').classed('corporation-selected')){
+        d3.selectAll('circle.corporation').classed('corporation-selected', false);
+      } else {
+        d3.selectAll('circle.corporation').classed('corporation-selected', true);
+      }
+    });
+
+} // ENDS graphics()
 
 
 
-function createGraph(graph) {
+function createGraph(graph, descriptions) {
   var width = $('#graphic').width();
   var height = $(window).height() - 100;
 
@@ -111,8 +145,12 @@ function createGraph(graph) {
   var partitionMax = d3.max(graph.nodes, function(d){ return d.partition; });
   // console.log('pM:', partitionMax);
 
-  var color = d3.scale.category20b()
+  // var color = d3.scale.category20b()
+  //     .domain(d3.range(partitionMax));
+
+  var color = d3.scale.category10()
       .domain(d3.range(partitionMax));
+
 
   // var x = d3.scale.ordinal()
   //     .domain(d3.range(partitionMax))
@@ -150,6 +188,7 @@ function createGraph(graph) {
                   id: d.id,
                   type: d.type,
                   amount: d.weight,
+                  office: d.office,
                   index: j
               };    
 
@@ -206,29 +245,109 @@ function createGraph(graph) {
         return d.index;
       })
       .attr('class', function(d) {
+
+
+        var nodeClass = '';
+
+
+        var offices = _.sortBy(d.office, function(i) {
+          return i[1];
+        });
+        offices.reverse();
+
+        nodeClass = offices[0][0].toLowerCase();
+
         if (d.cluster === 99) {
-          return 'project';
-        } else if (d.type === 'corporation') {
+          nodeClass += ' project';
+        } 
+        else if (d.type === 'corporation') {
           // return d3.rgb('rgb(173, 208, 238)').darker(1);
-          return 'corporation';
+          nodeClass += ' corporation';
          // return 'rgba(173, 208, 238, 1)';
         } else if (d.type === 'university') {
-          return 'university';
+          nodeClass += ' university';
          // return 'rgba(246, 179, 53, 1)';
-        }
+        } 
+        // console.log(nodeClass);
+        return nodeClass;
+
       })
-      .style('stroke', 'black')
-      // .on('mouseover', tip.show)
-      // .on('mouseout', tip.hide)
       .on('mouseover', function(d) {
-        var content = '<h3>' + d.id + '</h3><br>'+
-            '<p>' + currencyFormat(d.amount) + '</p>';
+        var content;
+        var amount = currencyFormat(d.amount);
+        if (d.id in descriptions) {
+          content = '<h4>' + d.id + '</h4>' +
+            '<p>Funding: ' + amount + '</p>' +
+            '<p class="description">' + descriptions[d.id].description + '</p>';
+        } else {
+          content = '<h4>' + d.id + '</h4>' +
+            '<p>Funding: ' + amount + '</p>'+
+            '<p class="description"> No description available</p>';
+        }
         tooltip.on(content);
       })
       .on('mousemove', function(d) { 
-        var content = '<h3>' + d.id + '</h3>'+
-            '<p>' + currencyFormat(d.amount) + '</p>';
+
+        console.log(d);
+
+        var id = d.index;
+        var others = [];
+        for (var i = 0; i < graph.links.length; i++) {
+
+            if (id === graph.links[i].source) {
+                others.push(graph.links[i].target);
+            } else if (id === graph.links[i].target) {
+                others.push(graph.links[i].source);
+            }
+        }
+        var otherNodes = [];
+        for (var i = 0; i < others.length; i++) {
+            var temp = {};
+            var node = others[i];
+            if (graph.nodes[node].type === 'program') {
+                temp.label = graph.nodes[node].label;
+                temp.amount = graph.nodes[node].weight;
+                otherNodes.push(temp);   
+            }
+        }
+        otherNodes.sort(function(a, b) { return a.amount - b.amount; }).reverse();
+
+        var amount = currencyFormat(d.amount);
+        var content;
+
+        if (d.id in descriptions) {
+          content = '<h4>' + d.id + '</h4>' +
+            '<p>Funding: ' + amount + '</p>' +
+            '<p class="description">' + descriptions[d.id].description + '</p>';
+        } else {
+          content = '<h4>' + d.id + '</h4>' +
+            '<p>Funding: ' + amount + '</p>'+
+            '<p class="description"> No description available</p>'; 
+        }
+        for (var i = 0; i < otherNodes.length; i++) {
+            var s = '<p class="subtext">' + otherNodes[i].label + '</p>';
+            content += s;
+        }
+
         tooltip.on(content);
+
+
+
+
+
+        // console.log(d);
+        // var content;
+        // var amount = currencyFormat(d.amount);
+        // if (d.id in descriptions) {
+        //   content = '<h4>' + d.id + '</h4>' +
+        //     '<p>Funding: ' + amount + '</p>' +
+        //     '<p class="description">' + descriptions[d.id].description + '</p>';
+        // } else {
+        //   content = '<h4>' + d.id + '</h4>' +
+        //     '<p>Funding: ' + amount + '</p>'+
+        //     '<p class="description"> No description available</p>';
+        // }
+        // tooltip.on(content);
       })
       .on('mouseout', function(d) { 
         tooltip.off();
@@ -368,7 +487,7 @@ function createGraph(graph) {
 
 
 
-function rowChart(fullgraph, graph, maxContract, target, listType) {
+function rowChart(fullgraph, graph, maxContract, target, listType, descriptions) {
     // console.log(graph);
 
     graph.sort(function(a, b) { return a.weight - b.weight; });
@@ -479,7 +598,10 @@ function rowChart(fullgraph, graph, maxContract, target, listType) {
                 }
             }
 
+            // console.log(d.id);
+
             if (listType === 'program') {
+
                 var otherNodes = [];
                 for (var i = 0; i < others.length; i++) {
                     var temp = {};
@@ -495,27 +617,27 @@ function rowChart(fullgraph, graph, maxContract, target, listType) {
                 otherNodes.sort(function(a, b) { return a.amount - b.amount; }).reverse();
 
                 var amount = currencyFormat(d.weight);
-                var content = '<p>' + amount + '</p>';
+                var content = '<h4>' + d.id + '</h4>' +
+                    '<p>Funding: ' + amount + '</p>' + 
+                    '<p class="description">' + descriptions[d.id].description + '</p>';
 
                 for (var i = 0; i < otherNodes.length; i++) {
                     var s = '<p class="subtext">' + otherNodes[i].label + '</p>';
                     content += s;
                 }
-                console.log(content);
+                
 
                 tooltip.on(content);
 
 
 
             } else if (listType === 'performer') {
+
                 var otherNodes = [];
                 for (var i = 0; i < others.length; i++) {
                     var temp = {};
-
                     var node = others[i];
-
                     if (fullgraph.nodes[node].type === 'program') {
-                        console.log('LIST TYPE = performer', fullgraph.nodes[i]);
                         temp.label = fullgraph.nodes[node].label;
                         temp.amount = fullgraph.nodes[node].weight;
                         otherNodes.push(temp);   
@@ -524,37 +646,24 @@ function rowChart(fullgraph, graph, maxContract, target, listType) {
                 otherNodes.sort(function(a, b) { return a.amount - b.amount; }).reverse();
 
                 var amount = currencyFormat(d.weight);
-                var content = '<p>' + amount + '</p>';
+                var content;
 
+                if (d.id in descriptions) {
+                  content = '<h4>' + d.id + '</h4>' +
+                    '<p>Funding: ' + amount + '</p>' +
+                    '<p class="description">' + descriptions[d.id].description + '</p>';
+                } else {
+                  content = '<h4>' + d.id + '</h4>' +
+                    '<p>Funding: ' + amount + '</p>'+
+                    '<p class="description"> No description available</p>'; 
+                }
                 for (var i = 0; i < otherNodes.length; i++) {
                     var s = '<p class="subtext">' + otherNodes[i].label + '</p>';
                     content += s;
                 }
-                console.log(content);
 
                 tooltip.on(content);
-             
-
-
             }
-            // otherNodes.sort(function(a, b) { return a.amount - b.amount; }).reverse();
-
-
-            // console.log(id);
-            // console.log(others);
-            // console.log(otherNodes);
-
-
-            // var amount = currencyFormat(d.weight);
-            // var content = '<p>' + amount + '</p>';
-
-            // for (var i = 0; i < otherNodes.length; i++) {
-            //     var s = '<p class="subtext">' + otherNodes[i].label + '</p>';
-            //     content += s;
-            // }
-            // console.log(content);
-
-            // tooltip.on(content);
         })
         .on('mouseout', function(d) {
             tooltip.off();

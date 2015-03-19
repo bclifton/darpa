@@ -106,13 +106,52 @@ text:hover {
 .project {
   fill: rgba(100, 100, 100, 1);
 }
-.corporation {
-  /*fill: rgba(125, 16, 16, 0.6);*/
-  fill: rgb(87, 11, 11);
+.corporation-selected {
+  fill: rgb(87, 11, 11) !important;
+/*  stroke: rgb(87, 11, 11);
+  stroke-width: 3px;*/
 }
-.university {
-  /*fill: rgba(174, 123, 29, 0.6);*/
-  fill: rgb(122, 86, 20);
+.university-selected {
+  fill: rgb(122, 86, 20) !important;
+/*  stroke: rgb(122, 86, 20);
+  stroke-width: 3px;*/
+}
+
+.aeo {
+  fill: #b71500;
+}
+.bto {
+  fill: #d35c00;
+}
+.dso {
+  fill: #ebaf00;
+}
+.i2o {
+  fill: #4c9509;
+}
+.mto {
+  fill: #31b7d7;
+}
+.sto {
+  fill: #397BC2;
+}
+.tto {
+  fill: #55399a;
+}
+
+.cmo {
+  fill: #738083;
+}
+.comp {
+  fill: #9DBD9E;
+}
+.sbir {
+  fill: #A39F8F;
+}
+
+
+.red {
+  fill: red !important;
 }
 
 .legend {
@@ -137,6 +176,7 @@ text:hover {
 
 
 #tooltip {
+    width: 200px;
     visibility: hidden;
     position: absolute;
     line-height: 20px;
@@ -184,3 +224,16 @@ text:hover {
   color: darkgray !important;
   line-height: 1.25;
 }
+
+.description {
+  font-size: 9px;
+  line-height: 1.5;
+  color: lightgray !important;
+}
+
+/*---------------------------*/
+/*.btn {
+  position: absolute;
+  top: 10px;
+  
+}*/
