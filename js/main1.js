@@ -41,8 +41,8 @@ function graphics(error, graph, performerDescription, projectDescription) {
   var maxContract = d3.max(graph.nodes, function(d){ return d.weight; });
 
   createGraph(graph, performerDescription);
-  // rowChart(graph, contractors, maxContract, '#performer-list', 'performer', performerDescription);
-  // rowChart(graph, programs, maxContract, '#project-list', 'program', projectDescription);
+  rowChart(graph, contractors, maxContract, '#performer-list', 'performer', performerDescription);
+  rowChart(graph, programs, maxContract, '#project-list', 'program', projectDescription);
 
 
   $('#performer-list svg g').on('mouseover', function(d) {
